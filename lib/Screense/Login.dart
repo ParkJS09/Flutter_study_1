@@ -72,6 +72,8 @@ class AuthPage extends StatelessWidget {
                   },
                 ),
                 TextFormField(
+                  //패스워드 형식으로 변경
+                  obscureText: true,
                   controller: _passwordController,
                   decoration: InputDecoration(
                       icon: Icon(Icons.vpn_key), labelText: 'password'),
