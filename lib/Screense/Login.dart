@@ -101,9 +101,17 @@ class AuthPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Text('LOGIN'),
+        child: Text('LOGIN',
+        style: TextStyle(
+          color: Colors.white
+        ),),
         color: Colors.blue,
-        onPressed: () {},
+        onPressed: () {
+          //formKey를 활용하여 currnetState를 가져와 validate()를 호
+            if(_formKey.currentState.validate()){
+
+          }
+        },
       ),
     );
   }
