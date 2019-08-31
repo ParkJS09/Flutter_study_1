@@ -1,3 +1,4 @@
+import 'package:firebase_auth/Helper/login_background.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatelessWidget {
@@ -16,6 +17,10 @@ class AuthPage extends StatelessWidget {
       children: <Widget>[
         Container(
           color: Colors.white,
+        ),
+        CustomPaint(
+          size : size,
+          painter: LoginBackground(),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
