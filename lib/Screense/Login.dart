@@ -21,8 +21,9 @@ class AuthPage extends StatelessWidget {
           color: Colors.white,
         ),
         CustomPaint(
-          size : size,
-          painter: LoginBackground(isJoin: Provider.of<JoinOrLogin>(context).isJoin),
+          size: size,
+          painter:
+              LoginBackground(isJoin: Provider.of<JoinOrLogin>(context).isJoin),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -42,7 +43,12 @@ class AuthPage extends StatelessWidget {
             Container(
               height: size.height * 0.1,
             ),
-            Text('Dont have an acoount? create one'),
+            GestureDetector(
+                onTap: () {
+                  JoinOrLogin joinOrLoginData = Provider.of<JoinOrLogin>(context);
+                  joinOrLoginData.toggle();
+                },
+                child: Text('Dont have an acoount? create one')),
             Container(
               height: size.height * 0.05,
             )
@@ -108,16 +114,14 @@ class AuthPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Text('LOGIN',
-        style: TextStyle(
-          color: Colors.white
-        ),),
+        child: Text(
+          'LOGIN',
+          style: TextStyle(color: Colors.white),
+        ),
         color: Colors.blue,
         onPressed: () {
           //formKey를 활용하여 currnetState를 가져와 validate()를 호
-            if(_formKey.currentState.validate()){
-
-          }
+          if (_formKey.currentState.validate()) {}
         },
       ),
     );
