@@ -129,17 +129,17 @@ class AuthPage extends StatelessWidget {
       child: Consumer<JoinOrLogin>(
         builder: (context, value, child) => RaisedButton(
           child: Text(
-            value.isJoin?'JOIN':'LOGIN',
+            value.isJoin ? 'JOIN' : 'LOGIN',
             style: TextStyle(color: Colors.white),
           ),
-          color: value.isJoin?Colors.red:Colors.blue,
+          color: value.isJoin ? Colors.red : Colors.blue,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
           onPressed: () {
             //formKey를 활용하여 currnetState를 가져와 validate()를 호
             if (_formKey.currentState.validate()) {
-              value.isJoin?_register(context):_login(context);
+              value.isJoin ? _register(context) : _login(context);
             }
           },
         ),
@@ -168,33 +168,66 @@ class AuthPage extends StatelessWidget {
    * 회원가입 메소드
    */
   void _register(BuildContext context) async {
-    final AuthResult reuslt = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text
-    );
-
-    final FirebaseUser user = reuslt.user;
-
-    if(user == null){
-      final snackBar = SnackBar(content: Text('에러났져!'),);
-      Scaffold.of(context).showSnackBar(snackBar);
+    try {
+      final AuthResult reuslt = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
+      final FirebaseUser user = reuslt.user;
+      if (user == null) {
+        final snackBar = SnackBar(
+          content: Text('Please try again later'),
+        );
+        Scaffold.of(context).showSnackBar(snackBar);
+      }
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => MainPage(email: user.email)));
+    } catch (e) {
+      showError(e, context);
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> MainPage(email:user.email)));
   }
 
   /**
    * 로그 메소드
    */
   void _login(BuildContext context) async {
-    final AuthResult reuslt = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text
-    );
-    final FirebaseUser user = reuslt.user;
-    if(user == null){
-      final snackBar = SnackBar(content: Text('Please try again later'),);
-      Scaffold.of(context).showSnackBar(snackBar);
+    try {
+      final AuthResult reuslt = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
+      final FirebaseUser user = reuslt.user;
+      if (user == null) {
+        final snackBar = SnackBar(
+          content: Text('Please try again later'),
+        );
+        Scaffold.of(context).showSnackBar(snackBar);
+      }
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => MainPage(email: user.email)));
+    } catch (e) {
+      showError(e, context);
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> MainPage(email:user.email)));
+  }
+
+  void showError(e, BuildContext context) {
+    String authError = '';
+    print(e.code);
+    switch (e.code) {
+      case 'ERROR_INVALID_EMAIL':
+        authError = '이메일이 틀렸습니다.';
+        break;
+      case 'ERROR_USER_NOT_FOUND':
+        authError = '해당하는 유저가 없습니다.';
+        break;
+      case 'ERROR_WRONG_PASSWORD':
+        authError = '패스워드가 잘못되었습니다.';
+        break;
+      default:
+        authError = '에러가 발생하였습니다.' + '/n' + '잠시 후 다시 실행하여 주시기 바랍니다.';
+        break;
+    }
+    final snackBar = SnackBar(
+      content: Text(authError),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 }
