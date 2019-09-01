@@ -1,4 +1,5 @@
 import 'package:firebase_auth/Helper/login_background.dart';
+import 'package:firebase_auth/data/join_or_login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class AuthPage extends StatelessWidget {
         ),
         CustomPaint(
           size : size,
-          painter: LoginBackground(Provider.of<Join>(context)),
+          painter: LoginBackground(isJoin: Provider.of<JoinOrLogin>(context).isJoin),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
