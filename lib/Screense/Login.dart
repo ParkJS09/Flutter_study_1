@@ -43,12 +43,18 @@ class AuthPage extends StatelessWidget {
             Container(
               height: size.height * 0.1,
             ),
-            GestureDetector(
-                onTap: () {
-                  JoinOrLogin joinOrLoginData = Provider.of<JoinOrLogin>(context);
-                  joinOrLoginData.toggle();
-                },
-                child: Text('Dont have an acoount? create one')),
+            Consumer<JoinOrLogin>(
+                builder: (context, value, child) => GestureDetector(
+                    onTap: () {
+                      value.toggle();
+                    },
+                    child: Text(
+                      value.isJoin
+                          ? 'Already have an acoount? Sign In'
+                          : 'Dont have an acoount? create one',
+                      style: TextStyle(
+                          color: value.isJoin ? Colors.red : Colors.blue),
+                    ))),
             Container(
               height: size.height * 0.05,
             )
@@ -98,7 +104,12 @@ class AuthPage extends StatelessWidget {
                 Container(
                   height: 16,
                 ),
-                Text('Forgot Paswword?')
+                Consumer<JoinOrLogin>(
+                  //Opacity 투명
+                  builder: (context, value, child) => Opacity(
+                      opacity: value.isJoin ? 0 : 1,
+                      child: Text('Forgot Paswword?')),
+                )
               ],
             ),
           ),
@@ -110,19 +121,21 @@ class AuthPage extends StatelessWidget {
   Widget _setLoginBtn() {
     return SizedBox(
       height: 50,
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+      child: Consumer<JoinOrLogin>(
+        builder: (context, value, child) => RaisedButton(
+          child: Text(
+            value.isJoin?'JOIN':'LOGIN',
+            style: TextStyle(color: Colors.white),
+          ),
+          color: value.isJoin?Colors.red:Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          onPressed: () {
+            //formKey를 활용하여 currnetState를 가져와 validate()를 호
+            if (_formKey.currentState.validate()) {}
+          },
         ),
-        child: Text(
-          'LOGIN',
-          style: TextStyle(color: Colors.white),
-        ),
-        color: Colors.blue,
-        onPressed: () {
-          //formKey를 활용하여 currnetState를 가져와 validate()를 호
-          if (_formKey.currentState.validate()) {}
-        },
       ),
     );
   }
