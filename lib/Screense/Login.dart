@@ -1,5 +1,6 @@
 import 'package:firebase_auth/Helper/login_background.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AuthPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -20,7 +21,7 @@ class AuthPage extends StatelessWidget {
         ),
         CustomPaint(
           size : size,
-          painter: LoginBackground(),
+          painter: LoginBackground(Provider.of<Join>(context)),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
