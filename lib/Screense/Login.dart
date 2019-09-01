@@ -1,7 +1,10 @@
-import 'package:firebase_auth/Helper/login_background.dart';
-import 'package:firebase_auth/data/join_or_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auths/Helper/login_background.dart';
+import 'package:firebase_auths/data/join_or_login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'main_page.dart';
 
 class AuthPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -92,6 +95,8 @@ class AuthPage extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: _passwordController,
+                  //Password input type
+                  obscureText: true,
                   decoration: InputDecoration(
                       icon: Icon(Icons.vpn_key), labelText: 'password'),
                   validator: (String value) {
@@ -133,7 +138,9 @@ class AuthPage extends StatelessWidget {
           ),
           onPressed: () {
             //formKey를 활용하여 currnetState를 가져와 validate()를 호
-            if (_formKey.currentState.validate()) {}
+            if (_formKey.currentState.validate()) {
+              value.isJoin?_register(context):_login(context);
+            }
           },
         ),
       ),
@@ -155,5 +162,42 @@ class AuthPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /**
+   * 회원가입 메소드
+   */
+  void _register(BuildContext context) async {
+    final AuthResult reuslt = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text
+    );
+
+    final FirebaseUser user = reuslt.user;
+
+    if(user == null){
+      final snackBar = SnackBar(content: Text('에러났져!'),);
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> MainPage(email:user.email)));
+  }
+
+  /**
+   * 로그 메소드
+   */
+  void _login(BuildContext context) async {
+    final AuthResult reuslt = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text
+    );
+
+    final FirebaseUser user = reuslt.user;
+
+    if(user == null){
+      final snackBar = SnackBar(content: Text('Please try again later'),);
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> MainPage(email:user.email)));
   }
 }
